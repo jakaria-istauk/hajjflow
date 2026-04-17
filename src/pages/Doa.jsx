@@ -3,16 +3,20 @@ import { DUAS_100 } from '../data/amalData.js';
 
 export function Doa() {
   const toggleTask = useAmalStore(s => s.toggleTask);
-  const isTaskDone = useAmalStore(s => s.isTaskDone);
+  const doneLogs   = useAmalStore(s => s.logs[s.selectedDate] ?? {});
+  const doneCount  = DUAS_100.reduce((acc, _, i) => acc + (doneLogs[`dua_${i + 1}`] === 'done' ? 1 : 0), 0);
 
   return (
     <>
       <p className="section-title">১০০টি দোয়ার তালিকা</p>
-      <div style={{ fontSize: 12, color: 'var(--text-sec)', marginBottom: 12 }}>টিক দিয়ে ট্র্যাক করুন</div>
+      <div style={{ fontSize: 12, color: 'var(--text-sec)', marginBottom: 12 }}>
+        টিক দিয়ে ট্র্যাক করুন &nbsp;
+        <span style={{ fontWeight: 600, color: 'var(--green)' }}>{doneCount}/{DUAS_100.length}</span>
+      </div>
       <div className="card">
         {DUAS_100.map((dua, i) => {
           const id   = `dua_${i + 1}`;
-          const done = isTaskDone(id);
+          const done = doneLogs[id] === 'done';
           return (
             <div className="doa-item" key={id}>
               <div className="doa-num">{i + 1}.</div>

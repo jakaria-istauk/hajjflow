@@ -13,9 +13,16 @@ function getTawafCount() {
 }
 
 export function Overview({ onNavigate }) {
-  const fetchDate = useAmalStore(s => s.fetchDate);
-  const getStats  = useAmalStore(s => s.getStats);
-  const setDate   = useAmalStore(s => s.setSelectedDate);
+  const fetchDate  = useAmalStore(s => s.fetchDate);
+  const setDate    = useAmalStore(s => s.setSelectedDate);
+  const coreStats  = useAmalStore(s => {
+    const dayLog = s.logs[s.selectedDate] ?? {};
+    return { done: DAILY_CORE.filter(t => dayLog[t.id] === 'done').length, total: DAILY_CORE.length };
+  });
+  const stepStats  = useAmalStore(s => {
+    const dayLog = s.logs[s.selectedDate] ?? {};
+    return { done: HAJJ_STEPS.filter(t => dayLog[t.id] === 'done').length, total: HAJJ_STEPS.length };
+  });
   const [stepsOpen,  setStepsOpen]  = useState(false);
   const [tawafTotal] = useState(getTawafCount);
 
@@ -23,9 +30,6 @@ export function Overview({ onNavigate }) {
     setDate(todayStr());
     fetchDate(todayStr());
   }, []);
-
-  const coreStats = getStats(DAILY_CORE);
-  const stepStats = getStats(HAJJ_STEPS);
 
   return (
     <>

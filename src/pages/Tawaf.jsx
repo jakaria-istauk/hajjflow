@@ -8,26 +8,39 @@ function toBn(n) {
 function getTawafCount() {
   return parseInt(localStorage.getItem('hajjflow_tawaf_count') || '0', 10);
 }
+function getTawafRound() {
+  return parseInt(localStorage.getItem('hajjflow_tawaf_round') || '0', 10);
+}
+function getTawafSalah() {
+  return localStorage.getItem('hajjflow_tawaf_salah') === 'true';
+}
 
 export function Tawaf() {
-  const [roundCount,  setRoundCount]  = useState(0);
-  const [salahDone,   setSalahDone]   = useState(false);
+  const [roundCount,  setRoundCount]  = useState(getTawafRound);
+  const [salahDone,   setSalahDone]   = useState(getTawafSalah);
   const [showPopup,   setShowPopup]   = useState(false);
   const [tawafTotal,  setTawafTotal]  = useState(getTawafCount);
 
   function handleRound() {
-    setRoundCount(c => Math.min(c + 1, 7));
+    setRoundCount(c => {
+      const next = Math.min(c + 1, 7);
+      localStorage.setItem('hajjflow_tawaf_round', next);
+      return next;
+    });
   }
 
   function handleSalahCheck() {
     const next = !salahDone;
     setSalahDone(next);
+    localStorage.setItem('hajjflow_tawaf_salah', next);
     if (next) setShowPopup(true);
   }
 
   function handleSave() {
     const newTotal = tawafTotal + 1;
     localStorage.setItem('hajjflow_tawaf_count', newTotal);
+    localStorage.setItem('hajjflow_tawaf_round', '0');
+    localStorage.setItem('hajjflow_tawaf_salah', 'false');
     setTawafTotal(newTotal);
     setRoundCount(0);
     setSalahDone(false);
@@ -36,6 +49,7 @@ export function Tawaf() {
 
   function handleCancel() {
     setSalahDone(false);
+    localStorage.setItem('hajjflow_tawaf_salah', 'false');
     setShowPopup(false);
   }
 
@@ -84,7 +98,10 @@ export function Tawaf() {
         )}
 
         {roundCount > 0 && roundCount < 7 && (
-          <button className="counter-reset" onClick={() => setRoundCount(0)}>
+          <button className="counter-reset" onClick={() => {
+            setRoundCount(0);
+            localStorage.setItem('hajjflow_tawaf_round', '0');
+          }}>
             রিসেট
           </button>
         )}
