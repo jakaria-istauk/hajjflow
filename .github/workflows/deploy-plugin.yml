@@ -1,0 +1,54 @@
+name: Deploy WP Plugin via FTP
+
+on:
+  push:
+    branches: master
+    paths:
+      - 'hajjflow-api/**'
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Check for plugin changes
+        id: changes
+        run: |
+          if git diff --quiet HEAD~1 HEAD -- hajjflow-api/; then
+            echo "changed=false" >> $GITHUB_OUTPUT
+          else
+            echo "changed=true" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Deploy via FTP
+        if: steps.changes.outputs.changed == 'true' || github.event_name == 'workflow_dispatch'
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.FTP_HOST }}
+          username: ${{ secrets.FTP_USER }}
+          password: ${{ secrets.FTP_PASS }}
+          port: ${{ secrets.FTP_PORT || 21 }}
+          local-dir: ./hajjflow-api/
+          server-dir: /home/jakariac/app.jakaria.com.bd/wp-content/plugins/hajjflow-api/
+          exclude: |
+            .distignore
+            .gitignore
+            **/.git*
+            **/.git*/**
+            .DS_Store
+            **/node_modules/**
+            package.json
+            package-lock.json
+            composer.json
+            composer.lock
+            **/*.map
+            **/*.log
+            phpcs.xml
+            phpunit.xml
+            phpunit.xml.dist
+            tests/**
