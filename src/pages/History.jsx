@@ -18,11 +18,14 @@ function nextDay(dateStr) {
 }
 
 export function History() {
-  const selectedDate   = useAmalStore(s => s.selectedDate);
-  const setDate        = useAmalStore(s => s.setSelectedDate);
-  const fetchDate      = useAmalStore(s => s.fetchDate);
-  const fetchAllLogs   = useAmalStore(s => s.fetchAllLogs);
-  const getStats       = useAmalStore(s => s.getStats);
+  const selectedDate = useAmalStore(s => s.selectedDate);
+  const setDate      = useAmalStore(s => s.setSelectedDate);
+  const fetchDate    = useAmalStore(s => s.fetchDate);
+  const fetchAllLogs = useAmalStore(s => s.fetchAllLogs);
+  const { done, total } = useAmalStore(s => {
+    const dayLog = s.logs[s.selectedDate] ?? {};
+    return { done: ALL_TASKS.filter(t => dayLog[t.id] === 'done').length, total: ALL_TASKS.length };
+  });
 
   useEffect(() => {
     fetchAllLogs();
@@ -31,8 +34,6 @@ export function History() {
   useEffect(() => {
     fetchDate(selectedDate);
   }, [selectedDate]);
-
-  const { done, total } = getStats(ALL_TASKS);
   const today = new Date().toISOString().slice(0, 10);
   const isToday = selectedDate === today;
 

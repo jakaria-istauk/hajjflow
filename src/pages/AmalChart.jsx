@@ -5,12 +5,13 @@ import { useAmalStore } from '../store/amalStore.js';
 import { AMAL_CHART_TASKS, todayStr } from '../data/amalData.js';
 
 export function AmalChart() {
-  const fetchDate = useAmalStore(s => s.fetchDate);
-  const getStats  = useAmalStore(s => s.getStats);
+  const fetchDate     = useAmalStore(s => s.fetchDate);
+  const { done, total } = useAmalStore(s => {
+    const dayLog = s.logs[s.selectedDate] ?? {};
+    return { done: AMAL_CHART_TASKS.filter(t => dayLog[t.id] === 'done').length, total: AMAL_CHART_TASKS.length };
+  });
 
   useEffect(() => { fetchDate(todayStr()); }, []);
-
-  const { done, total } = getStats(AMAL_CHART_TASKS);
 
   return (
     <>
