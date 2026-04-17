@@ -2,7 +2,7 @@ name: Deploy WP Plugin via FTP
 
 on:
   push:
-    branches: master
+    branches: deploy
     paths:
       - 'hajjflow-api/**'
   workflow_dispatch:

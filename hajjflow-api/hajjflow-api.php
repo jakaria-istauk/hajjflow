@@ -40,31 +40,47 @@ add_action( 'plugins_loaded', function () {
 } );
 
 // CORS — allow React dev/prod origins
+function hajjflow_get_allowed_origins() {
+	$raw = array_merge(
+		[
+			'http://localhost:5173',
+			'http://localhost:3000',
+			defined( 'HAJJFLOW_REACT_ORIGIN' ) ? HAJJFLOW_REACT_ORIGIN : getenv( 'HAJJFLOW_REACT_ORIGIN' ),
+		],
+		(array) get_option( 'hajjflow_react_origins', [] )
+	);
+	return array_values( array_filter( array_map( fn( $o ) => rtrim( (string) $o, '/' ), $raw ) ) );
+}
+
+function hajjflow_send_cors_headers( $origin ) {
+	header( 'Access-Control-Allow-Origin: ' . $origin );
+	header( 'Access-Control-Allow-Credentials: true' );
+	header( 'Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS' );
+	header( 'Access-Control-Allow-Headers: Authorization, Content-Type, X-HajjFlow-Sig, X-HajjFlow-Timestamp, X-HajjFlow-Nonce' );
+}
+
 add_action( 'rest_api_init', function () {
 	remove_filter( 'rest_pre_serve_request', 'rest_send_cors_headers' );
 	add_filter( 'rest_pre_serve_request', function ( $value ) {
 		$origin  = get_http_origin();
-		$allowed = array_filter( array_merge(
-			[
-				'http://localhost:5173',
-				'http://localhost:3000',
-				defined( 'HAJJFLOW_REACT_ORIGIN' ) ? HAJJFLOW_REACT_ORIGIN : getenv( 'HAJJFLOW_REACT_ORIGIN' ),
-			],
-			(array) get_option( 'hajjflow_react_origins', [] )
-		) );
-		if ( in_array( $origin, array_filter( $allowed ), true ) ) {
-			header( 'Access-Control-Allow-Origin: ' . esc_url_raw( $origin ) );
-			header( 'Access-Control-Allow-Credentials: true' );
-			header( 'Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS' );
-			header( 'Access-Control-Allow-Headers: Authorization, Content-Type, X-HajjFlow-Sig, X-HajjFlow-Timestamp, X-HajjFlow-Nonce' );
+		$allowed = hajjflow_get_allowed_origins();
+		if ( in_array( $origin, $allowed, true ) ) {
+			hajjflow_send_cors_headers( $origin );
 		}
 		return $value;
 	} );
 }, 15 );
 
+// Preflight — must send CORS headers before exit or browser rejects
 add_action( 'init', function () {
-	if ( isset( $_SERVER['REQUEST_METHOD'] ) && 'OPTIONS' === $_SERVER['REQUEST_METHOD'] ) {
-		status_header( 200 );
-		exit();
+	if ( ! isset( $_SERVER['REQUEST_METHOD'] ) || 'OPTIONS' !== $_SERVER['REQUEST_METHOD'] ) {
+		return;
 	}
+	$origin  = get_http_origin();
+	$allowed = hajjflow_get_allowed_origins();
+	if ( in_array( $origin, $allowed, true ) ) {
+		hajjflow_send_cors_headers( $origin );
+	}
+	status_header( 204 );
+	exit();
 } );
