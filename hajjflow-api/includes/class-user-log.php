@@ -74,6 +74,46 @@ class HajjFlow_User_Log {
 	}
 
 	// ─────────────────────────────────────────────────────────────────────────
+	// Merge local localStorage logs into remote, one date at a time.
+	// Local data takes precedence: incoming $local_logs[date] fully replaces
+	// the remote entry for that date. Dates not in $local_logs are untouched.
+	// Returns the count of dates merged, or WP_Error on failure.
+	// ─────────────────────────────────────────────────────────────────────────
+	public static function merge_local_logs( int $user_id, array $local_logs ) {
+		$post_id = self::get_or_create_log_post( $user_id );
+		if ( ! $post_id ) {
+			return new WP_Error( 'log_post_error', 'Could not get log post.', [ 'status' => 500 ] );
+		}
+
+		$post = get_post( $post_id );
+		if ( ! $post || (int) $post->post_author !== $user_id ) {
+			return new WP_Error( 'forbidden', 'Ownership check failed.', [ 'status' => 403 ] );
+		}
+
+		$remote = self::get_logs( $user_id );
+		$count  = 0;
+
+		foreach ( $local_logs as $date => $tasks ) {
+			// Validate date format
+			if ( ! preg_match( '/^\d{4}-\d{2}-\d{2}$/', $date ) || ! is_array( $tasks ) ) {
+				continue;
+			}
+
+			$sanitized = [];
+			foreach ( $tasks as $task_id => $status ) {
+				$sanitized[ sanitize_key( $task_id ) ] = ( 'done' === $status ) ? 'done' : 'pending';
+			}
+
+			// Local wins — overwrite remote entry for this date
+			$remote[ sanitize_text_field( $date ) ] = $sanitized;
+			$count++;
+		}
+
+		update_post_meta( $post_id, HajjFlow_CPT::META_KEY, wp_json_encode( $remote ) );
+		return $count;
+	}
+
+	// ─────────────────────────────────────────────────────────────────────────
 	// Bulk update all tasks for a date (full replace for that date's entries)
 	// ─────────────────────────────────────────────────────────────────────────
 	public static function bulk_update_date( int $user_id, string $date, array $tasks ): bool {

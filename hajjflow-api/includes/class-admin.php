@@ -45,13 +45,45 @@ class HajjFlow_Admin {
 		$nonce  = wp_create_nonce( 'hajjflow_sig_nonce' );
 		?>
 		<div class="wrap" id="hajjflow-sig-page">
-			<h1>HajjFlow — App Signature Tokens</h1>
+			<h1>HajjFlow — Settings</h1>
+
+			<h2>.env Keys</h2>
+			<p style="color:#666;">Copy these into your React app <code>.env</code> file.</p>
+			<table class="widefat" style="max-width:700px;margin-top:8px;">
+				<tbody>
+					<?php
+					$env_fields = [
+						'VITE_WP_LOGGED_IN_KEY' => LOGGED_IN_KEY,
+						'VITE_WP_AUTH_SALT'     => AUTH_SALT,
+					];
+					foreach ( $env_fields as $key => $val ) :
+					?>
+					<tr>
+						<th style="width:220px;vertical-align:middle;font-family:monospace;"><?php echo esc_html( $key ); ?></th>
+						<td style="vertical-align:middle;">
+							<input
+								type="password"
+								id="hf-env-<?php echo esc_attr( sanitize_key( $key ) ); ?>"
+								value="<?php echo esc_attr( $val ); ?>"
+								readonly
+								style="width:100%;font-family:monospace;font-size:13px;"
+							/>
+						</td>
+						<td style="width:130px;vertical-align:middle;text-align:right;">
+							<button class="button hf-toggle-btn" data-target="hf-env-<?php echo esc_attr( sanitize_key( $key ) ); ?>">Show</button>
+							<button class="button hf-copy-btn" data-target="hf-env-<?php echo esc_attr( sanitize_key( $key ) ); ?>">Copy</button>
+						</td>
+					</tr>
+					<?php endforeach; ?>
+				</tbody>
+			</table>
+
+			<h2 style="margin-top:32px;">App Signature Tokens</h2>
 			<p style="color:#666;">
-				Valid for <strong>5 minutes</strong> from generation.
-				Use these headers in your React app or HTTP client.
+				Valid for <strong>5 minutes</strong>. Use for manual testing with curl/Postman.
 			</p>
 
-			<table class="widefat" style="max-width:700px;margin-top:16px;">
+			<table class="widefat" style="max-width:700px;margin-top:8px;">
 				<tbody>
 					<?php
 					$fields = [
@@ -103,16 +135,46 @@ class HajjFlow_Admin {
 			var nonce   = <?php echo wp_json_encode( $nonce ); ?>;
 			var restBase = <?php echo wp_json_encode( rest_url( 'hajjflow/v1/' ) ); ?>;
 
-			// Copy buttons
-			document.querySelectorAll('.hf-copy-btn').forEach(function(btn){
+			// Show/hide toggle for secret fields
+			document.querySelectorAll('.hf-toggle-btn').forEach(function(btn){
 				btn.addEventListener('click', function(){
 					var el = document.getElementById(btn.dataset.target);
-					var txt = el.tagName === 'TEXTAREA' ? el.value : el.value;
-					navigator.clipboard.writeText(txt).then(function(){
-						var orig = btn.textContent;
+					if (el.type === 'password') {
+						el.type = 'text';
+						btn.textContent = 'Hide';
+					} else {
+						el.type = 'password';
+						btn.textContent = 'Show';
+					}
+				});
+			});
+
+			// Copy buttons
+			function hfCopy(text, btn) {
+				var orig = btn.textContent;
+				if (navigator.clipboard && window.isSecureContext) {
+					navigator.clipboard.writeText(text).then(function(){
 						btn.textContent = 'Copied!';
 						setTimeout(function(){ btn.textContent = orig; }, 1500);
 					});
+				} else {
+					var ta = document.createElement('textarea');
+					ta.value = text;
+					ta.style.cssText = 'position:fixed;top:0;left:0;opacity:0;';
+					document.body.appendChild(ta);
+					ta.focus();
+					ta.select();
+					document.execCommand('copy');
+					document.body.removeChild(ta);
+					btn.textContent = 'Copied!';
+					setTimeout(function(){ btn.textContent = orig; }, 1500);
+				}
+			}
+
+			document.querySelectorAll('.hf-copy-btn').forEach(function(btn){
+				btn.addEventListener('click', function(){
+					var el = document.getElementById(btn.dataset.target);
+					hfCopy(el.value, btn);
 				});
 			});
 

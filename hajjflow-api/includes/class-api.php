@@ -37,6 +37,13 @@ class HajjFlow_API {
 			'callback'            => [ __CLASS__, 'get_me' ],
 			'permission_callback' => [ __CLASS__, 'check_jwt_and_signature' ],
 		] );
+
+		// POST /wp-json/hajjflow/v1/sync-local-data
+		register_rest_route( $ns, '/sync-local-data', [
+			'methods'             => 'POST',
+			'callback'            => [ __CLASS__, 'sync_local_data' ],
+			'permission_callback' => [ __CLASS__, 'check_jwt_and_signature' ],
+		] );
 	}
 
 	// ─────────────────────────────────────────────────────────────────────────
@@ -166,6 +173,29 @@ class HajjFlow_API {
 			'name'    => $user->display_name,
 			'email'   => $user->user_email,
 			'picture' => get_user_meta( $user->ID, 'hajjflow_google_picture', true ),
+		] );
+	}
+
+	// ─────────────────────────────────────────────────────────────────────────
+	// POST /sync-local-data
+	// Body: { logs: { 'YYYY-MM-DD': { task_id: 'done'|'pending' } } }
+	// Local data takes precedence — overwrites each date in remote.
+	// ─────────────────────────────────────────────────────────────────────────
+	public static function sync_local_data( WP_REST_Request $request ) {
+		$user = $request->get_param( '_hajjflow_user' );
+		$body = $request->get_json_params();
+		$logs = $body['logs'] ?? null;
+
+		if ( ! is_array( $logs ) || empty( $logs ) ) {
+			return new WP_Error( 'invalid_payload', 'logs must be a non-empty object.', [ 'status' => 400 ] );
+		}
+
+		$merged = HajjFlow_User_Log::merge_local_logs( $user->ID, $logs );
+		if ( is_wp_error( $merged ) ) return $merged;
+
+		return rest_ensure_response( [
+			'success'       => true,
+			'merged_dates'  => $merged,
 		] );
 	}
 }
