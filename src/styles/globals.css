@@ -206,3 +206,53 @@ footer { position: sticky; bottom: 0; z-index: 15; }
 .step-sub { font-size: 11px; color: var(--text-sec); margin-top: 2px; }
 .step-list { padding-left: 16px; margin: 0; }
 .step-list li { font-size: 13px; color: var(--text); line-height: 1.7; }
+
+/* ── Tawaf Counter ───────────────────────────────────────────────────────── */
+.tawaf-counter-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px 16px; margin-bottom: 16px; }
+.tawaf-counter-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+.tawaf-total-badge { font-size: 12px; font-weight: 500; color: var(--green); background: var(--green-lt); padding: 3px 10px; border-radius: 99px; }
+.counter-display { text-align: center; margin-bottom: 16px; }
+.counter-num { font-size: 72px; font-weight: 700; color: var(--green); line-height: 1; }
+.counter-sub { font-size: 14px; color: var(--text-sec); margin-top: 4px; }
+.counter-dots { display: flex; justify-content: center; gap: 8px; margin-bottom: 20px; }
+.counter-dot { width: 14px; height: 14px; border-radius: 50%; background: var(--bg-sec); border: 2px solid var(--border); transition: all 0.2s; }
+.counter-dot.done { background: var(--green); border-color: var(--green); }
+.counter-btn { width: 100%; padding: 18px; background: var(--green); color: #fff; border: none; border-radius: var(--radius-md); font-size: 18px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; touch-action: manipulation; transition: opacity 0.12s; }
+.counter-btn:active { opacity: 0.8; }
+.counter-btn-icon { font-size: 22px; }
+.counter-reset { display: block; margin: 10px auto 0; background: none; border: none; color: var(--text-sec); font-size: 12px; cursor: pointer; padding: 4px 8px; text-decoration: underline; }
+
+/* Salah reveal */
+.salah-reveal { animation: fadeSlideUp 0.3s ease; }
+@keyframes fadeSlideUp { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+.salah-reveal-label { font-size: 13px; color: var(--green); font-weight: 500; text-align: center; margin-bottom: 12px; padding: 10px 12px; background: var(--green-lt); border-radius: var(--radius-sm); line-height: 1.5; }
+.salah-check-btn { width: 100%; display: flex; align-items: center; gap: 12px; padding: 14px 16px; border: 2px solid var(--border); border-radius: var(--radius-md); background: var(--bg-sec); cursor: pointer; font-size: 14px; color: var(--text); transition: all 0.2s; touch-action: manipulation; }
+.salah-check-btn.done { border-color: var(--green); background: var(--green-lt); color: var(--green); }
+.salah-check-box { width: 22px; height: 22px; border: 1.5px solid var(--border); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; flex-shrink: 0; transition: all 0.2s; }
+.salah-check-btn.done .salah-check-box { background: var(--green); border-color: var(--green); color: #fff; }
+
+/* Tawaf completion popup */
+.tawaf-popup { gap: 8px !important; }
+.tawaf-popup-icon { font-size: 48px; }
+.tawaf-popup-title { font-size: 18px; font-weight: 600; color: var(--green); }
+.tawaf-popup-sub { font-size: 13px; color: var(--text-sec); line-height: 1.6; }
+.tawaf-popup-btns { display: flex; gap: 10px; width: 100%; margin-top: 8px; }
+.tawaf-btn-save   { flex: 1; padding: 12px; background: var(--green); color: #fff; border: none; border-radius: var(--radius-md); font-size: 14px; font-weight: 600; cursor: pointer; touch-action: manipulation; }
+.tawaf-btn-cancel { flex: 1; padding: 12px; background: var(--bg-sec); color: var(--text); border: 1px solid var(--border); border-radius: var(--radius-md); font-size: 14px; cursor: pointer; touch-action: manipulation; }
+
+/* ── Overview Tawaf card ─────────────────────────────────────────────────── */
+.tawaf-overview-card { width: 100%; display: flex; align-items: center; justify-content: space-between; padding: 14px 16px; background: var(--green-lt); border: 1px solid rgba(26,92,58,0.2); border-radius: var(--radius-lg); margin-bottom: 12px; cursor: pointer; touch-action: manipulation; transition: opacity 0.12s; text-align: left; }
+.tawaf-overview-card:active { opacity: 0.75; }
+.tawaf-ov-left { display: flex; align-items: center; gap: 12px; }
+.tawaf-ov-icon { font-size: 24px; }
+.tawaf-ov-title { font-size: 14px; font-weight: 600; color: var(--green); }
+.tawaf-ov-sub { font-size: 12px; color: var(--text-sec); margin-top: 2px; }
+.tawaf-ov-arrow { font-size: 22px; color: var(--green); font-weight: 300; line-height: 1; }
+
+/* ── Accordion ───────────────────────────────────────────────────────────── */
+.accordion-header { width: 100%; display: flex; align-items: center; justify-content: space-between; background: none; border: none; cursor: pointer; padding: 0; touch-action: manipulation; }
+.accordion-meta { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+.accordion-progress { font-size: 11px; color: var(--text-sec); }
+.accordion-chevron { font-size: 18px; color: var(--text-sec); transition: transform 0.25s; display: inline-block; line-height: 1; }
+.accordion-chevron.open { transform: rotate(90deg); }
+.accordion-body { margin-top: 10px; animation: fadeSlideUp 0.2s ease; }

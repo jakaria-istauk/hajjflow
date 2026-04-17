@@ -138,7 +138,7 @@ export default function App() {
       <Header />
       <SyncBanner />
       <main className="content">
-        <ActivePage />
+        <ActivePage onNavigate={handleTabChange} />
       </main>
       <footer>
         <div className="nav-shell">
