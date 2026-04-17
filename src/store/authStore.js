@@ -4,9 +4,13 @@ import { amalService } from '../services/amalService.js';
 const stored = localStorage.getItem('hajjflow_user');
 
 export const useAuthStore = create((set) => ({
-  user: stored ? JSON.parse(stored) : null,
-  loading: false,
-  error: null,
+  user:            stored ? JSON.parse(stored) : null,
+  loading:         false,
+  error:           null,
+  loginModalOpen:  false,
+
+  openLoginModal:  () => set({ loginModalOpen: true, error: null }),
+  closeLoginModal: () => set({ loginModalOpen: false, error: null }),
 
   loginWithGoogle: async (idToken) => {
     set({ loading: true, error: null });
@@ -15,7 +19,7 @@ export const useAuthStore = create((set) => ({
       localStorage.setItem('hajjflow_jwt', data.token);
       const user = { id: data.user_id, name: data.name, email: data.email, picture: data.picture };
       localStorage.setItem('hajjflow_user', JSON.stringify(user));
-      set({ user, loading: false });
+      set({ user, loading: false, loginModalOpen: false });
     } catch (err) {
       set({ error: err.response?.data?.message ?? 'Login failed', loading: false });
     }

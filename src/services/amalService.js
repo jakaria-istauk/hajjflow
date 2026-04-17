@@ -36,4 +36,11 @@ export const amalService = {
     const { data } = await api.post('/auth/google', { id_token: idToken });
     return data; // { token, user_id, name, email, picture }
   },
+
+  // POST /sync-local-data — bulk lift from localStorage → server
+  // logs: { 'YYYY-MM-DD': { task_id: 'done'|'pending' } }
+  async syncLocalData(logs) {
+    const { data } = await api.post('/sync-local-data', { logs });
+    return data; // { success, merged_dates }
+  },
 };
