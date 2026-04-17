@@ -125,11 +125,18 @@ footer { position: sticky; bottom: 0; z-index: 15; }
 .bangla-trans { font-size: 12px; color: var(--text-sec); line-height: 1.5; }
 
 /* ── Dua items ── */
-.doa-item { padding: 10px 0; border-bottom: 1px solid var(--border); display: flex; align-items: flex-start; gap: 10px; }
-.doa-item:last-child { border-bottom: none; }
-.doa-num { font-size: 12px; color: var(--text-sec); min-width: 28px; padding-top: 1px; }
+.doa-item-wrap { border-bottom: 1px solid var(--border); }
+.doa-item-wrap:last-child { border-bottom: none; }
+.doa-item-wrap.done { background: var(--bg-sec); }
+.doa-item { padding: 10px 12px; display: flex; align-items: flex-start; gap: 8px; }
+.doa-num { font-size: 12px; color: var(--text-sec); min-width: 26px; padding-top: 3px; flex-shrink: 0; }
+.doa-title-btn { flex: 1; background: none; border: none; padding: 0; cursor: pointer; display: flex; align-items: flex-start; gap: 6px; text-align: left; touch-action: manipulation; }
 .doa-text { font-size: 13px; color: var(--text); line-height: 1.5; flex: 1; }
 .doa-text.done { color: var(--text-ter); text-decoration: line-through; }
+.doa-chevron { font-size: 16px; color: var(--text-sec); transition: transform 0.22s ease; display: inline-block; line-height: 1; padding-top: 2px; flex-shrink: 0; }
+.doa-chevron.open { transform: rotate(90deg); }
+.doa-desc { font-size: 12px; color: var(--text-sec); line-height: 1.6; padding: 0 12px 10px 42px; animation: fadeSlideUp 0.2s ease; }
+.doa-counter { font-size: 11px; font-weight: 600; color: var(--green); background: var(--green-lt); padding: 2px 8px; border-radius: 99px; }
 
 /* ── Badge ── */
 .badge { display: inline-block; font-size: 11px; padding: 2px 8px; border-radius: 99px; font-weight: 500; margin-bottom: 8px; }
