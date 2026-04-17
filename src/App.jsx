@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { GoogleLogin } from '@react-oauth/google';
 import { useAuthStore } from './store/authStore.js';
 import { useAmalStore } from './store/amalStore.js';
@@ -30,9 +30,6 @@ const TABS = [
   { id: 'surah',      label: 'সূরা',              icon: '📖', Page: Surah      },
   { id: 'history',    label: 'ইতিহাস',            icon: '📅', Page: History    },
 ];
-
-// Primary tabs shown in bottom nav
-const PRIMARY_TAB_IDS = ['overview', 'chart', 'hajjsteps', 'doa'];
 
 // ── Login modal (shown when user explicitly requests login) ────────────────
 function LoginModal() {
@@ -111,8 +108,7 @@ export default function App() {
   const fetchDate      = useAmalStore(s => s.fetchDate);
   const [tab, setTab]        = useState('overview');
   const [drawerOpen, setDrawerOpen] = useState(false);
-
-  const primaryTabs = TABS.filter(t => PRIMARY_TAB_IDS.includes(t.id));
+  const navRef = useRef(null);
 
   // Auth expiry → logout
   useEffect(() => {
@@ -128,11 +124,14 @@ export default function App() {
       fetchDate(today);
     }
     setTab(id);
+    // scroll active btn into view after render
+    requestAnimationFrame(() => {
+      const btn = navRef.current?.querySelector(`[data-tab="${id}"]`);
+      btn?.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+    });
   }
 
-  const activeTabData = TABS.find(t => t.id === tab);
-  const ActivePage = activeTabData?.Page ?? Overview;
-  const isSecondaryActive = !PRIMARY_TAB_IDS.includes(tab);
+  const ActivePage = TABS.find(t => t.id === tab)?.Page ?? Overview;
 
   return (
     <div className="app">
@@ -142,30 +141,31 @@ export default function App() {
         <ActivePage />
       </main>
       <footer>
-        <nav className="nav" role="tablist" aria-label="Sections">
-          {primaryTabs.map(t => (
-            <button
-              key={t.id}
-              className={`nav-btn${tab === t.id ? ' active' : ''}`}
-              onClick={() => handleTabChange(t.id)}
-              role="tab"
-              aria-selected={tab === t.id}
-            >
-              <span className="nav-btn-icon">{t.icon}</span>
-              <span>{t.label}</span>
-            </button>
-          ))}
+        <div className="nav-shell">
+          <nav className="nav" role="tablist" aria-label="Sections" ref={navRef}>
+            {TABS.map(t => (
+              <button
+                key={t.id}
+                data-tab={t.id}
+                className={`nav-btn${tab === t.id ? ' active' : ''}`}
+                onClick={() => handleTabChange(t.id)}
+                role="tab"
+                aria-selected={tab === t.id}
+              >
+                <span className="nav-btn-icon">{t.icon}</span>
+                <span>{t.label}</span>
+              </button>
+            ))}
+          </nav>
           <button
-            className={`nav-btn nav-btn-menu${isSecondaryActive ? ' active' : ''}`}
-            onClick={() => setDrawerOpen(true)}
+            className={`nav-btn nav-btn-more${drawerOpen ? ' active' : ''}`}
+            onClick={() => setDrawerOpen(o => !o)}
             aria-label="আরো মেনু"
           >
-            <span className="nav-btn-icon">
-              {isSecondaryActive ? activeTabData?.icon : '☰'}
-            </span>
-            <span>{isSecondaryActive ? activeTabData?.label : 'আরো'}</span>
+            <span className="nav-btn-icon">☰</span>
+            <span>আরো</span>
           </button>
-        </nav>
+        </div>
       </footer>
       {drawerOpen && (
         <SideDrawer

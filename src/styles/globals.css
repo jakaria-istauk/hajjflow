@@ -61,10 +61,12 @@ body { font-family: var(--font); background: var(--bg); color: var(--text); -web
 
 /* ── Nav ── */
 footer { position: sticky; bottom: 0; z-index: 15; }
-.nav { display: flex; overflow-x: auto; scrollbar-width: none; border-top: 1px solid var(--border); background: var(--bg-card); }
+.nav-shell { display: flex; border-top: 1px solid var(--border); background: var(--bg-card); }
+.nav { display: flex; overflow-x: auto; scrollbar-width: none; flex: 1; }
 .nav::-webkit-scrollbar { display: none; }
-.nav-btn { flex: 0 0 auto; padding: 10px 14px; font-size: 11px; font-weight: 400; color: var(--text-sec); border: none; border-top: 2px solid transparent; background: transparent; cursor: pointer; white-space: nowrap; transition: all 0.15s; display: flex; flex-direction: column; align-items: center; gap: 3px; }
+.nav-btn { flex: 0 0 auto; padding: 10px 12px; font-size: 11px; font-weight: 400; color: var(--text-sec); border: none; border-top: 2px solid transparent; background: transparent; cursor: pointer; white-space: nowrap; transition: all 0.15s; display: flex; flex-direction: column; align-items: center; gap: 3px; }
 .nav-btn.active { color: var(--green); border-top-color: var(--green); font-weight: 500; }
+.nav-btn-more { flex-shrink: 0; border-left: 1px solid var(--border); }
 
 /* ── Content ── */
 .content { flex: 1; overflow-y: auto; padding: 16px; }
