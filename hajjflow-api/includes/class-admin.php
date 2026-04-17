@@ -4,18 +4,37 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 class HajjFlow_Admin {
 
 	public static function init() {
-		add_action( 'admin_menu', [ __CLASS__, 'register_menu' ] );
+		add_action( 'admin_menu',             [ __CLASS__, 'register_menu' ] );
+		add_action( 'admin_init',             [ __CLASS__, 'register_settings' ] );
 		add_action( 'wp_ajax_hajjflow_gen_sig', [ __CLASS__, 'ajax_gen_sig' ] );
 	}
 
 	public static function register_menu() {
-		add_management_page(
-			'HajjFlow Signature',
-			'HajjFlow Sig',
+		add_submenu_page(
+			'edit.php?post_type=hajjflow',
+			'HajjFlow Settings',
+			'Settings',
 			'manage_options',
 			'hajjflow-sig',
 			[ __CLASS__, 'render_page' ]
 		);
+	}
+
+	public static function register_settings() {
+		register_setting(
+			'hajjflow_settings_group',
+			'hajjflow_react_origins',
+			[
+				'type'              => 'array',
+				'sanitize_callback' => [ __CLASS__, 'sanitize_origins' ],
+				'default'           => [],
+			]
+		);
+	}
+
+	public static function sanitize_origins( $input ) {
+		if ( ! is_array( $input ) ) return [];
+		return array_values( array_filter( array_map( 'esc_url_raw', $input ) ) );
 	}
 
 	// ─── Generate sig set ────────────────────────────────────────────────────
@@ -41,13 +60,45 @@ class HajjFlow_Admin {
 	public static function render_page() {
 		if ( ! current_user_can( 'manage_options' ) ) return;
 
-		$tokens = self::generate();
-		$nonce  = wp_create_nonce( 'hajjflow_sig_nonce' );
+		$tokens  = self::generate();
+		$nonce   = wp_create_nonce( 'hajjflow_sig_nonce' );
+		$origins = get_option( 'hajjflow_react_origins', [] );
+		if ( ! is_array( $origins ) ) $origins = [];
 		?>
 		<div class="wrap" id="hajjflow-sig-page">
 			<h1>HajjFlow — Settings</h1>
 
-			<h2>.env Keys</h2>
+			<!-- ── React Origins ─────────────────────────────────────── -->
+			<h2>Allowed React Origins (CORS)</h2>
+			<p style="color:#666;">
+				URLs allowed to access the REST API.
+				<code>http://localhost:5173</code> and <code>http://localhost:3000</code> are always allowed in dev.
+			</p>
+			<form method="post" action="options.php">
+				<?php settings_fields( 'hajjflow_settings_group' ); ?>
+				<div id="hf-origins-list">
+					<?php foreach ( $origins as $url ) : ?>
+					<div class="hf-origin-row" style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+						<input
+							type="url"
+							name="hajjflow_react_origins[]"
+							value="<?php echo esc_attr( $url ); ?>"
+							placeholder="https://example.com"
+							class="regular-text"
+							style="width:400px;font-family:monospace;"
+						/>
+						<button type="button" class="button hf-remove-origin">Remove</button>
+					</div>
+					<?php endforeach; ?>
+				</div>
+				<p style="margin-top:8px;">
+					<button type="button" class="button" id="hf-add-origin">+ Add Origin</button>
+				</p>
+				<?php submit_button( 'Save Origins' ); ?>
+			</form>
+
+			<!-- ── .env Keys ─────────────────────────────────────────── -->
+			<h2 style="margin-top:32px;">.env Keys</h2>
 			<p style="color:#666;">Copy these into your React app <code>.env</code> file.</p>
 			<table class="widefat" style="max-width:700px;margin-top:8px;">
 				<tbody>
@@ -78,6 +129,7 @@ class HajjFlow_Admin {
 				</tbody>
 			</table>
 
+			<!-- ── Signature Tokens ───────────────────────────────────── -->
 			<h2 style="margin-top:32px;">App Signature Tokens</h2>
 			<p style="color:#666;">
 				Valid for <strong>5 minutes</strong>. Use for manual testing with curl/Postman.
@@ -131,11 +183,41 @@ class HajjFlow_Admin {
 
 		<script>
 		(function(){
-			var ajaxUrl = <?php echo wp_json_encode( admin_url( 'admin-ajax.php' ) ); ?>;
-			var nonce   = <?php echo wp_json_encode( $nonce ); ?>;
+			var ajaxUrl  = <?php echo wp_json_encode( admin_url( 'admin-ajax.php' ) ); ?>;
+			var nonce    = <?php echo wp_json_encode( $nonce ); ?>;
 			var restBase = <?php echo wp_json_encode( rest_url( 'hajjflow/v1/' ) ); ?>;
 
-			// Show/hide toggle for secret fields
+			// ── Repeater ──────────────────────────────────────────────
+			function makeOriginRow(val) {
+				var row = document.createElement('div');
+				row.className = 'hf-origin-row';
+				row.style.cssText = 'display:flex;align-items:center;gap:8px;margin-bottom:6px;';
+				var inp = document.createElement('input');
+				inp.type = 'url';
+				inp.name = 'hajjflow_react_origins[]';
+				inp.value = val || '';
+				inp.placeholder = 'https://example.com';
+				inp.className = 'regular-text';
+				inp.style.cssText = 'width:400px;font-family:monospace;';
+				var btn = document.createElement('button');
+				btn.type = 'button';
+				btn.className = 'button hf-remove-origin';
+				btn.textContent = 'Remove';
+				btn.addEventListener('click', function(){ row.remove(); });
+				row.appendChild(inp);
+				row.appendChild(btn);
+				return row;
+			}
+
+			document.getElementById('hf-add-origin').addEventListener('click', function(){
+				document.getElementById('hf-origins-list').appendChild(makeOriginRow(''));
+			});
+
+			document.querySelectorAll('.hf-remove-origin').forEach(function(btn){
+				btn.addEventListener('click', function(){ btn.closest('.hf-origin-row').remove(); });
+			});
+
+			// ── Show/hide toggle ──────────────────────────────────────
 			document.querySelectorAll('.hf-toggle-btn').forEach(function(btn){
 				btn.addEventListener('click', function(){
 					var el = document.getElementById(btn.dataset.target);
@@ -149,7 +231,7 @@ class HajjFlow_Admin {
 				});
 			});
 
-			// Copy buttons
+			// ── Copy buttons ──────────────────────────────────────────
 			function hfCopy(text, btn) {
 				var orig = btn.textContent;
 				if (navigator.clipboard && window.isSecureContext) {
@@ -178,7 +260,7 @@ class HajjFlow_Admin {
 				});
 			});
 
-			// Regenerate
+			// ── Regenerate ────────────────────────────────────────────
 			document.getElementById('hf-refresh-btn').addEventListener('click', function(){
 				var btn = this;
 				btn.disabled = true;
@@ -200,7 +282,6 @@ class HajjFlow_Admin {
 						var el = document.getElementById(id);
 						if (el) el.value = map[id];
 					});
-					// Update curl
 					document.getElementById('hf-curl').value =
 						'curl -X GET "' + restBase + 'YOUR_ENDPOINT" \\\n' +
 						'  -H "X-HajjFlow-Timestamp: ' + d.timestamp + '" \\\n' +

@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const WP_URL          = import.meta.env.VITE_WP_URL;
+const WP_URL          = import.meta.env.VITE_WP_URL?.replace(/\/+$/, '');
 const LOGGED_IN_KEY   = import.meta.env.VITE_WP_LOGGED_IN_KEY;
 const AUTH_SALT       = import.meta.env.VITE_WP_AUTH_SALT;
 

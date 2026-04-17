@@ -44,11 +44,14 @@ add_action( 'rest_api_init', function () {
 	remove_filter( 'rest_pre_serve_request', 'rest_send_cors_headers' );
 	add_filter( 'rest_pre_serve_request', function ( $value ) {
 		$origin  = get_http_origin();
-		$allowed = [
-			'http://localhost:5173',
-			'http://localhost:3000',
-			getenv( 'HAJJFLOW_REACT_ORIGIN' ) ?: '',
-		];
+		$allowed = array_filter( array_merge(
+			[
+				'http://localhost:5173',
+				'http://localhost:3000',
+				defined( 'HAJJFLOW_REACT_ORIGIN' ) ? HAJJFLOW_REACT_ORIGIN : getenv( 'HAJJFLOW_REACT_ORIGIN' ),
+			],
+			(array) get_option( 'hajjflow_react_origins', [] )
+		) );
 		if ( in_array( $origin, array_filter( $allowed ), true ) ) {
 			header( 'Access-Control-Allow-Origin: ' . esc_url_raw( $origin ) );
 			header( 'Access-Control-Allow-Credentials: true' );
