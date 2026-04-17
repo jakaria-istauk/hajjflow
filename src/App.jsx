@@ -14,20 +14,25 @@ import { Arafa }      from './pages/Arafa.jsx';
 import { Doa }        from './pages/Doa.jsx';
 import { Surah }      from './pages/Surah.jsx';
 import { History }    from './pages/History.jsx';
+import { HajjSteps }  from './pages/HajjSteps.jsx';
 import './styles/globals.css';
 
 const TABS = [
-  { id: 'overview', label: 'সারসংক্ষেপ', Page: Overview  },
-  { id: 'chart',    label: 'আমল চার্ট',  Page: AmalChart },
-  { id: 'tawaf',    label: 'তাওয়াফ',     Page: Tawaf     },
-  { id: 'makkah',   label: 'মক্কা',       Page: Makkah    },
-  { id: 'madina',   label: 'মদিনা',       Page: Madina    },
-  { id: 'mina',     label: 'মিনা',        Page: Mina      },
-  { id: 'arafa',    label: 'আরাফা',       Page: Arafa     },
-  { id: 'doa',      label: '১০০ দোয়া',  Page: Doa       },
-  { id: 'surah',    label: 'সূরা',         Page: Surah     },
-  { id: 'history',  label: 'ইতিহাস',      Page: History   },
+  { id: 'overview',   label: 'সারসংক্ষেপ',      icon: '🏠', Page: Overview   },
+  { id: 'chart',      label: 'আমল চার্ট',        icon: '📊', Page: AmalChart  },
+  { id: 'hajjsteps',  label: 'হজ্বের ধাপসমূহ',  icon: '🕋', Page: HajjSteps  },
+  { id: 'tawaf',      label: 'তাওয়াফ',           icon: '🔄', Page: Tawaf      },
+  { id: 'makkah',     label: 'মক্কা',             icon: '🌙', Page: Makkah     },
+  { id: 'madina',     label: 'মদিনা',             icon: '🕌', Page: Madina     },
+  { id: 'mina',       label: 'মিনা',              icon: '⛺', Page: Mina       },
+  { id: 'arafa',      label: 'আরাফা',             icon: '🏔️', Page: Arafa      },
+  { id: 'doa',        label: '১০০ দোয়া',         icon: '🤲', Page: Doa        },
+  { id: 'surah',      label: 'সূরা',              icon: '📖', Page: Surah      },
+  { id: 'history',    label: 'ইতিহাস',            icon: '📅', Page: History    },
 ];
+
+// Primary tabs shown in bottom nav
+const PRIMARY_TAB_IDS = ['overview', 'chart', 'hajjsteps', 'doa'];
 
 // ── Login modal (shown when user explicitly requests login) ────────────────
 function LoginModal() {
@@ -70,13 +75,44 @@ function LoginModal() {
   );
 }
 
+// ── Sidebar drawer ────────────────────────────────────────────────────────
+function SideDrawer({ activeTab, onSelect, onClose }) {
+  return (
+    <>
+      <div className="drawer-overlay" onClick={onClose} />
+      <aside className="drawer">
+        <div className="drawer-header">
+          <span className="drawer-title">মেনু</span>
+          <button className="drawer-close" onClick={onClose}>✕</button>
+        </div>
+        <nav className="drawer-nav">
+          {TABS.map(t => (
+            <button
+              key={t.id}
+              className={`drawer-item${activeTab === t.id ? ' active' : ''}`}
+              onClick={() => { onSelect(t.id); onClose(); }}
+            >
+              <span className="drawer-icon">{t.icon}</span>
+              <span>{t.label}</span>
+              {activeTab === t.id && <span className="drawer-active-dot" />}
+            </button>
+          ))}
+        </nav>
+      </aside>
+    </>
+  );
+}
+
 // ── App shell ─────────────────────────────────────────────────────────────
 export default function App() {
   const user           = useAuthStore(s => s.user);
   const loginModalOpen = useAuthStore(s => s.loginModalOpen);
   const setDate        = useAmalStore(s => s.setSelectedDate);
   const fetchDate      = useAmalStore(s => s.fetchDate);
-  const [tab, setTab]  = useState('overview');
+  const [tab, setTab]        = useState('overview');
+  const [drawerOpen, setDrawerOpen] = useState(false);
+
+  const primaryTabs = TABS.filter(t => PRIMARY_TAB_IDS.includes(t.id));
 
   // Auth expiry → logout
   useEffect(() => {
@@ -94,7 +130,9 @@ export default function App() {
     setTab(id);
   }
 
-  const ActivePage = TABS.find(t => t.id === tab)?.Page ?? Overview;
+  const activeTabData = TABS.find(t => t.id === tab);
+  const ActivePage = activeTabData?.Page ?? Overview;
+  const isSecondaryActive = !PRIMARY_TAB_IDS.includes(tab);
 
   return (
     <div className="app">
@@ -105,7 +143,7 @@ export default function App() {
       </main>
       <footer>
         <nav className="nav" role="tablist" aria-label="Sections">
-          {TABS.map(t => (
+          {primaryTabs.map(t => (
             <button
               key={t.id}
               className={`nav-btn${tab === t.id ? ' active' : ''}`}
@@ -113,11 +151,29 @@ export default function App() {
               role="tab"
               aria-selected={tab === t.id}
             >
-              {t.label}
+              <span className="nav-btn-icon">{t.icon}</span>
+              <span>{t.label}</span>
             </button>
           ))}
+          <button
+            className={`nav-btn nav-btn-menu${isSecondaryActive ? ' active' : ''}`}
+            onClick={() => setDrawerOpen(true)}
+            aria-label="আরো মেনু"
+          >
+            <span className="nav-btn-icon">
+              {isSecondaryActive ? activeTabData?.icon : '☰'}
+            </span>
+            <span>{isSecondaryActive ? activeTabData?.label : 'আরো'}</span>
+          </button>
         </nav>
       </footer>
+      {drawerOpen && (
+        <SideDrawer
+          activeTab={tab}
+          onSelect={handleTabChange}
+          onClose={() => setDrawerOpen(false)}
+        />
+      )}
       {loginModalOpen && !user && <LoginModal />}
     </div>
   );
