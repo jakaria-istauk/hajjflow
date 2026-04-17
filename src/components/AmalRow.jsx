@@ -2,8 +2,7 @@ import { useAmalStore } from '../store/amalStore.js';
 
 export function AmalRow({ task, checkClass = 'check' }) {
   const toggleTask = useAmalStore(s => s.toggleTask);
-  const isTaskDone = useAmalStore(s => s.isTaskDone);
-  const done = isTaskDone(task.id);
+  const done = useAmalStore(s => s.logs[s.selectedDate]?.[task.id] === 'done');
 
   return (
     <div className="amal-row">
