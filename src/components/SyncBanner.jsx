@@ -30,7 +30,7 @@ export function SyncBanner() {
         ✕
       </button>
       <p className="sync-banner-msg">
-        ☁️ আপনার আমল স্থায়ীভাবে সেভ করতে চান?
+        ☁️ আপনার আমলের তথ্য স্থায়ীভাবে সেভ করতে চান?
       </p>
       {error && <p className="sync-banner-error">{error}</p>}
       {loading

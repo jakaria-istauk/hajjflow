@@ -51,7 +51,7 @@ function LoginModal() {
         <div className="login-logo">🕋</div>
         <div className="login-title">হজ্ব আমল পরিকল্পনা</div>
         <div className="login-sub">
-          লগইন করে আপনার আমল স্থায়ীভাবে সেভ করুন এবং যেকোনো ডিভাইসে অ্যাক্সেস করুন।
+          লগইন করে আপনার আমলের তথ্য স্থায়ীভাবে সেভ করুন এবং যেকোনো ডিভাইসে অ্যাক্সেস করুন।
         </div>
         {error && <p style={{ color: 'var(--red)', fontSize: 13, marginTop: 8 }}>{error}</p>}
         {loading
