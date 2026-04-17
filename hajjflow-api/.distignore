@@ -12,4 +12,5 @@ composer.lock
 *.log
 phpcs.xml
 phpunit.xml
+phpunit.xml.dist
 tests/
