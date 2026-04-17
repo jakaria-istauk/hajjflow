@@ -60,10 +60,11 @@ body { font-family: var(--font); background: var(--bg); color: var(--text); -web
 @keyframes pulse { 0%,100% { opacity:1 } 50% { opacity:0.3 } }
 
 /* ── Nav ── */
-.nav { display: flex; overflow-x: auto; scrollbar-width: none; border-bottom: 1px solid var(--border); background: var(--bg-card); position: sticky; top: 60px; z-index: 15; }
+footer { position: sticky; bottom: 0; z-index: 15; }
+.nav { display: flex; overflow-x: auto; scrollbar-width: none; border-top: 1px solid var(--border); background: var(--bg-card); }
 .nav::-webkit-scrollbar { display: none; }
-.nav-btn { flex: 0 0 auto; padding: 10px 14px; font-size: 12px; font-weight: 400; color: var(--text-sec); border: none; border-bottom: 2px solid transparent; background: transparent; cursor: pointer; white-space: nowrap; transition: all 0.15s; }
-.nav-btn.active { color: var(--green); border-bottom-color: var(--green); font-weight: 500; }
+.nav-btn { flex: 0 0 auto; padding: 10px 14px; font-size: 12px; font-weight: 400; color: var(--text-sec); border: none; border-top: 2px solid transparent; background: transparent; cursor: pointer; white-space: nowrap; transition: all 0.15s; }
+.nav-btn.active { color: var(--green); border-top-color: var(--green); font-weight: 500; }
 
 /* ── Content ── */
 .content { flex: 1; overflow-y: auto; padding: 16px; }

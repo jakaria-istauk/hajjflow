@@ -100,22 +100,24 @@ export default function App() {
     <div className="app">
       <Header />
       <SyncBanner />
-      <nav className="nav" role="tablist" aria-label="Sections">
-        {TABS.map(t => (
-          <button
-            key={t.id}
-            className={`nav-btn${tab === t.id ? ' active' : ''}`}
-            onClick={() => handleTabChange(t.id)}
-            role="tab"
-            aria-selected={tab === t.id}
-          >
-            {t.label}
-          </button>
-        ))}
-      </nav>
       <main className="content">
         <ActivePage />
       </main>
+      <footer>
+        <nav className="nav" role="tablist" aria-label="Sections">
+          {TABS.map(t => (
+            <button
+              key={t.id}
+              className={`nav-btn${tab === t.id ? ' active' : ''}`}
+              onClick={() => handleTabChange(t.id)}
+              role="tab"
+              aria-selected={tab === t.id}
+            >
+              {t.label}
+            </button>
+          ))}
+        </nav>
+      </footer>
       {loginModalOpen && !user && <LoginModal />}
     </div>
   );
