@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<title>HajjFlow — মুদ্রণযোগ্য হজ্ব গাইড</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: 'Noto Sans Bengali', 'Kalpurush', 'SolaimanLipi', 'Shonar Bangla', Arial, sans-serif;
+  color: #000;
+  background: #fff;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+/* ─── PAGE SETUP ─────────────────────────────────────── */
+@page          { size: A4 portrait;  margin: 10mm; }
+@page wide-pg  { size: A4 landscape; margin: 8mm; }
+
+.page {
+  width: 190mm;
+  min-height: 277mm;
+  page-break-after: always;
+  position: relative;
+  overflow: hidden;
+}
+
+.page-wide {
+  page: wide-pg;
+  width: 281mm;
+  min-height: 178mm;
+  page-break-after: always;
+  position: relative;
+  overflow: hidden;
+}
+
+@media screen {
+  body { background: #aaa; padding: 6mm; }
+  .page      { background: #fff; padding: 10mm; margin: 0 auto 8mm; }
+  .page-wide { background: #fff; padding: 8mm;  margin: 0 auto 8mm; }
+}
+@media print {
+  body { background: #fff; padding: 0; }
+  .page      { margin: 0; width: 100%; padding: 0 8mm 8mm; }
+  .page-wide { margin: 0; width: 100%; padding: 0 8mm 6mm; }
+}
+
+/* ─── TYPOGRAPHY ─────────────────────────────────────── */
+.page-title {
+  font-size: 13.5pt;
+  font-weight: bold;
+  text-align: center;
+  border-bottom: 1.5pt solid #000;
+  padding-bottom: 2.5mm;
+  margin-bottom: 3.5mm;
+  letter-spacing: 0.2mm;
+}
+
+.section-title {
+  font-size: 10.5pt;
+  font-weight: bold;
+  border-bottom: 1pt solid #000;
+  padding-bottom: 1.5mm;
+  margin: 5mm 0 2.5mm;
+}
+
+.sub-title {
+  font-size: 9.5pt;
+  font-weight: bold;
+  margin: 3mm 0 1.5mm;
+}
+
+p  { font-size: 9pt; line-height: 1.65; margin-bottom: 1.5mm; }
+li { font-size: 9pt; line-height: 1.65; }
+ul, ol { padding-left: 4.5mm; margin-bottom: 2mm; }
+
+/* ─── AMAL TABLE ─────────────────────────────────────── */
+#amal-table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+#amal-table td,
+#amal-table th {
+  border: 0.5pt solid #222;
+}
+
+.th-label {
+  font-size: 8.5pt;
+  font-weight: bold;
+  text-align: center;
+  padding: 2mm 1.5mm;
+  vertical-align: bottom;
+  background: #d8d8d8;
+}
+
+.th-day-cell {
+  height: 36mm;
+  padding: 0;
+  padding-bottom: 5px;
+  vertical-align: bottom;
+  text-align: center;
+  background: #efefef;
+}
+
+.th-day-inner {
+  display: block;
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  font-size: 6.5pt;
+  white-space: nowrap;
+  text-align: left;
+  padding-bottom: 1.5mm;
+  padding-left: 0.5mm;
+}
+
+.td-serial {
+  text-align: center;
+  font-size: 7pt;
+  vertical-align: middle;
+  padding: 0;
+  background: #d8d8d8;
+}
+
+.td-name {
+  font-size: 8pt;
+  padding: 1.5mm 2mm;
+  vertical-align: middle;
+  white-space: nowrap;
+  background: #efefef;
+}
+
+.td-cell { height: 9mm; }
+
+#amal-table tbody tr:nth-child(odd) .td-cell { background: #fafafa; }
+#amal-table tbody tr:nth-child(even) .td-cell { background: #fff; }
+
+/* ─── CHECKLIST ──────────────────────────────────────── */
+.cl-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 1.8mm;
+  margin-bottom: 1.3mm;
+}
+.cl-box {
+  width: 3.5mm;
+  height: 3.5mm;
+  border: 0.7pt solid #000;
+  flex-shrink: 0;
+  margin-top: 0.6mm;
+}
+.cl-text { font-size: 8.5pt; line-height: 1.5; }
+.cl-group { margin-bottom: 3.5mm; }
+.cl-group-title {
+  font-size: 9pt;
+  font-weight: bold;
+  border-left: 2pt solid #000;
+  padding-left: 2mm;
+  margin-bottom: 1.5mm;
+}
+
+/* ─── TAWAF TABLE ────────────────────────────────────── */
+.tawaf-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 8.5pt;
+}
+.tawaf-table th,
+.tawaf-table td {
+  border: 0.5pt solid #000;
+  padding: 1.5mm 1.5mm;
+  text-align: center;
+  vertical-align: middle;
+}
+.tawaf-table .td-tname {
+  text-align: right;
+  background: #efefef;
+  white-space: nowrap;
+  font-size: 8.5pt;
+  padding: 1.5mm 2.5mm;
+}
+.tawaf-table .td-date {
+  min-width: 14mm;
+}
+.tawaf-table th { background: #d8d8d8; font-weight: bold; }
+.tc {
+  display: inline-block;
+  width: 5mm; height: 5mm;
+  border: 0.7pt solid #000;
+  border-radius: 50%;
+}
+
+/* ─── DUA BOXES ──────────────────────────────────────── */
+.dua-box {
+  border: 0.6pt solid #555;
+  padding: 2mm 3mm;
+  margin-bottom: 2.5mm;
+  page-break-inside: avoid;
+  break-inside: avoid;
+}
+.dua-title {
+  font-size: 8.5pt;
+  font-weight: bold;
+  border-bottom: 0.3pt solid #aaa;
+  padding-bottom: 1mm;
+  margin-bottom: 1.5mm;
+}
+.dua-ar {
+  font-size: 11pt;
+  text-align: right;
+  direction: rtl;
+  line-height: 2;
+  margin-bottom: 1.5mm;
+}
+.dua-bn {
+  font-size: 8pt;
+  line-height: 1.6;
+  color: #333;
+  font-style: italic;
+}
+
+/* ─── SCHEDULE TABLE ─────────────────────────────────── */
+.sched { width: 100%; border-collapse: collapse; font-size: 8.5pt; }
+.sched th, .sched td { border: 0.5pt solid #000; padding: 1.2mm 2mm; }
+.sched th { background: #d8d8d8; font-weight: bold; text-align: center; }
+.sched .td-day { background: #efefef; font-weight: bold; text-align: center; white-space: nowrap; }
+.sched .td-time { text-align: center; white-space: nowrap; }
+
+/* ─── UTILITIES ──────────────────────────────────────── */
+.two-col { display: flex; gap: 6mm; }
+.two-col > div { flex: 1; }
+.text-center { text-align: center; }
+.text-sm { font-size: 8pt; }
+.text-xs { font-size: 7.5pt; color: #666; }
+.mt2 { margin-top: 2mm; }
+.mt3 { margin-top: 3mm; }
+.mt4 { margin-top: 4mm; }
+.bold { font-weight: bold; }
+.note-box {
+  border: 0.5pt solid #888;
+  padding: 2mm 3mm;
+  background: #f5f5f5;
+  margin: 2.5mm 0;
+  font-size: 8.5pt;
+  line-height: 1.65;
+}
+.hadith-ref {
+  font-size: 7.5pt;
+  color: #555;
+  font-style: italic;
+}
+.divider { border: none; border-top: 0.5pt solid #ccc; margin: 3mm 0; }
+.page-foot {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  display: flex;
+  justify-content: space-between;
+  font-size: 7pt;
+  color: #aaa;
+  border-top: 0.3pt solid #ddd;
+  padding-top: 1mm;
+}
+
+/* print tip banner (screen only) */
+.print-tip {
+  background: #e8f4fd;
+  border: 1pt solid #6ab4e8;
+  padding: 3mm 5mm;
+  font-size: 9pt;
+  margin-bottom: 5mm;
+  border-radius: 2mm;
+}
+@media print { .print-tip { display: none; } }
+</style>
+</head>
+<body>
+
+<div class="print-tip">
+  🖨️ <strong>প্রিন্ট টিপস:</strong>
+  Chrome বা Edge ব্রাউজার → Ctrl+P → "Background graphics" চালু করুন → "Save as PDF" বা সরাসরি প্রিন্ট।
+  প্রথম পৃষ্ঠা স্বয়ংক্রিয়ভাবে Landscape (আড়াআড়ি), বাকি সব Portrait (সোজা) হবে।
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     পৃষ্ঠা ১ | হজ্ব আমল লগ — LANDSCAPE A4
+     ৪৮ দিন × ১৬ আমল
+     ═══════════════════════════════════════════════════════ -->
+<div class="page-wide" id="pg1">
+  <div class="page-title">🕋 HajjFlow — হজ্ব আমল লগ</div>
+  <p class="text-center text-xs" style="margin-bottom:3mm">
+    আমল সম্পন্ন হলে ঘরে টিক (✓) দিন &nbsp;|&nbsp; প্রতিদিন তারিখের ঘরে তারিখ লিখুন &nbsp;|&nbsp; ✦ = ফরজ আমল
+  </p>
+  <div id="amal-table-wrap"></div>
+  <div class="page-foot">
+    <span>HajjFlow — github.com/jakaria-istauk/hajjflow</span>
+    <span>পৃষ্ঠা ১</span>
+  </div>
+</div>
+
+<script>
+(function () {
+  var DAYS = 46;
+  var BN = '০১২৩৪৫৬৭৮৯';
+  function bn(n) { return String(n).replace(/\d/g, function (d) { return BN[+d]; }); }
+
+  var amala = [
+    [1,  'ফজর নামাজ',          '✦'],
+    [2,  'যোহর নামাজ',         '✦'],
+    [3,  'আসর নামাজ',          '✦'],
+    [4,  'মাগরিব নামাজ',       '✦'],
+    [5,  'এশা নামাজ',          '✦'],
+    [6,  'তাহাজ্জুদ নামাজ',    ''],
+    [7,  'চাশতের নামাজ',       ''],
+    [8,  'কুরআন তিলাওয়াত',    ''],
+    [9,  'ইস্তিগফার — ১০০×',   ''],
+    [10, 'সুবহানাল্লাহ — ১০০×',''],
+    [11, 'দরূদ শরিফ — ১০০×',  ''],
+    [12, 'তালবিয়া পাঠ',       ''],
+    [13, 'তাওয়াফ (নফল)',      ''],
+    [14, 'জমজম পান',           ''],
+    [15, 'মিসওয়াক',           ''],
+    [16, 'সদকা / ভালো কাজ',   ''],
+  ];
+
+  // widths: 7mm serial + 40mm name + 48 × 4.75mm day = 47 + 228 = 275mm (fits 279mm printable) ✓
+  var html = '<table id="amal-table"><colgroup>';
+  html += '<col style="width:7mm"><col style="width:40mm">';
+  for (var d = 0; d < DAYS; d++) html += '<col style="width:4.75mm">';
+  html += '</colgroup><thead><tr>';
+  html += '<th class="th-label">#</th><th class="th-label">আমলের নাম</th>';
+  for (var d = 1; d <= DAYS; d++) {
+    html += '<th class="th-day-cell"><span class="th-day-inner">দিন&nbsp;' + bn(d) + '<br>___</span></th>';
+  }
+  html += '</tr></thead><tbody>';
+
+  for (var i = 0; i < amala.length; i++) {
+    var a = amala[i];
+    html += '<tr><td class="td-serial">' + bn(a[0]) + '</td>';
+    html += '<td class="td-name">' + a[1];
+    if (a[2]) html += ' <span style="font-size:7pt;color:#555">' + a[2] + '</span>';
+    html += '</td>';
+    for (var d = 0; d < DAYS; d++) html += '<td class="td-cell"></td>';
+    html += '</tr>';
+  }
+  html += '</tbody></table>';
+  document.getElementById('amal-table-wrap').innerHTML = html;
+})();
+</script>
+
+
+
+
+<!-- ═══════════════════════════════════════════════════════
+     পৃষ্ঠা ২ | মক্কা শরিফ গাইড — PORTRAIT
+     ═══════════════════════════════════════════════════════ -->
+<div class="page" id="pg2">
+  <div class="page-title">🕋 মক্কা মুকাররামা — আমল ও রুটিন গাইড</div>
+
+  <div class="two-col">
+    <div>
+      <div class="section-title" style="margin-top:0">মসজিদুল হারামে প্রবেশ</div>
+      <ul>
+        <li>ডান পা আগে দিয়ে প্রবেশ করুন</li>
+        <li>বিসমিল্লাহ ও দরূদ পড়ুন</li>
+        <li>কাবা শরিফ দেখামাত্র দোয়া করুন (কবুল হয়)</li>
+        <li>ভিড়ে কাউকে কষ্ট না দিয়ে এগান</li>
+      </ul>
+
+      <div class="section-title">তাওয়াফের ধাপ</div>
+      <ol>
+        <li>ওজু করুন, ইহরাম পরুন (উমরা হলে)</li>
+        <li>হাজরে আসওয়াদ বরাবর দাঁড়িয়ে ইস্তিলাম করুন</li>
+        <li>বিসমিল্লাহ বলে শুরু — কাবা বামে রেখে হাঁটুন</li>
+        <li>হাতিম (হিজর ইসমাইল) বাইরে দিয়ে যান</li>
+        <li>রুকনে ইয়ামানিতে হাত রাখুন (সম্ভব হলে)</li>
+        <li>প্রতি চক্করে জিকির ও দোয়া পড়ুন</li>
+        <li>৭ চক্কর শেষে মাকামে ইবরাহিমে ২ রাকাত</li>
+        <li>জমজম পান করুন — মুলতাজামে দোয়া করুন</li>
+      </ol>
+
+      <div class="section-title">সাফা-মারওয়া সাঈ</div>
+      <ol>
+        <li>সাফা পাহাড়ে উঠুন — কাবার দিকে মুখ করুন</li>
+        <li>দোয়া পড়ে মারওয়ার দিকে হাঁটুন</li>
+        <li>সবুজ বাতির মাঝে পুরুষরা একটু দ্রুত হাঁটুন</li>
+        <li>মারওয়ায় পৌঁছে কাবার দিকে মুখ করে দোয়া</li>
+        <li>এভাবে ৭ চক্কর — শেষ হয় মারওয়ায়</li>
+      </ol>
+
+      <div class="section-title">হাতিম ও মুলতাজাম</div>
+      <p><strong>হাতিম:</strong> কাবার উত্তর দিকের আধা-বৃত্তাকার অংশ — এখানে নামাজ পড়া কাবার ভেতরে নামাজের সমান। সুযোগ পেলে ২ রাকাত পড়ুন।</p>
+      <p class="mt2"><strong>মুলতাজাম:</strong> দরজা ও হাজরে আসওয়াদের মাঝ — বুক লাগিয়ে কেঁদে যা মনে চায় দোয়া করুন।</p>
+    </div>
+
+    <div>
+      <div class="section-title" style="margin-top:0">জমজম পানের আদব</div>
+      <ul>
+        <li>কিবলামুখী হয়ে দাঁড়িয়ে পান করুন</li>
+        <li>বিসমিল্লাহ বলে শুরু করুন</li>
+        <li>তিন নিঃশ্বাসে পান করুন</li>
+        <li>পেট ভরে পান করুন — বরকতের পানি</li>
+        <li>গায়ে ঢালতে পারেন</li>
+      </ul>
+
+      <div class="section-title">মক্কায় দৈনিক রুটিন</div>
+      <table class="sched">
+        <thead>
+          <tr><th>সময়</th><th>আমল</th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="td-time">ফজর আগে</td><td>তাহাজ্জুদ, তাওবা, দোয়া</td></tr>
+          <tr><td class="td-time">ফজর</td><td>মসজিদে হারামে জামাতে নামাজ</td></tr>
+          <tr><td class="td-time">ফজর পরে</td><td>সূর্যোদয় পর্যন্ত জিকির ও কুরআন</td></tr>
+          <tr><td class="td-time">সকাল</td><td>নফল তাওয়াফ (ভিড় কম থাকে)</td></tr>
+          <tr><td class="td-time">চাশত</td><td>চাশতের নামাজ, বিশ্রাম</td></tr>
+          <tr><td class="td-time">যোহর</td><td>জামাতে নামাজ, কুরআন তিলাওয়াত</td></tr>
+          <tr><td class="td-time">আসর</td><td>জামাতে নামাজ, দোয়া</td></tr>
+          <tr><td class="td-time">মাগরিব আগে</td><td>দোয়া (কবুলের সময়)</td></tr>
+          <tr><td class="td-time">মাগরিব</td><td>জামাতে নামাজ</td></tr>
+          <tr><td class="td-time">এশা</td><td>জামাতে নামাজ, তারাবি (রমজানে)</td></tr>
+          <tr><td class="td-time">রাত</td><td>নফল তাওয়াফ, কুরআন, ইস্তিগফার</td></tr>
+        </tbody>
+      </table>
+
+      <div class="section-title">বিশেষ স্থানসমূহ</div>
+      <ul>
+        <li><strong>জাবালে নূর:</strong> হেরা গুহা — প্রথম ওহী নাজিলের স্থান</li>
+        <li><strong>জাবালে সাওর:</strong> হিজরতের সময় নবী (সা.) লুকিয়েছিলেন</li>
+        <li><strong>মিনা:</strong> হজ্বের দিনগুলোয় তাঁবুতে থাকার স্থান</li>
+        <li><strong>আরাফা:</strong> হজ্বের মূল রুকন — ওয়াকুফের স্থান</li>
+      </ul>
+
+      <div class="note-box">
+        <strong>মনে রাখুন:</strong> মসজিদুল হারামে প্রতি রাকাত নামাজ = ১ লক্ষ রাকাতের সওয়াব। সময় নষ্ট না করে নফল নামাজ, তাওয়াফ ও কুরআন তিলাওয়াতে সময় দিন।
+        <span class="hadith-ref">(ইবনে মাজাহ)</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-foot">
+    <span>HajjFlow — github.com/jakaria-istauk/hajjflow</span>
+    <span>পৃষ্ঠা ২</span>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════
+     পৃষ্ঠা ৩ | মদিনা + আরাফাহ / মিনা / মুযদালিফা — PORTRAIT
+     ═══════════════════════════════════════════════════════ -->
+<div class="page" id="pg3">
+  <div class="page-title">🌙 মদিনা মুনাওয়ারা ও হজ্বের মূল দিনগুলো</div>
+
+  <div class="two-col">
+    <div>
+      <div class="section-title" style="margin-top:0">মসজিদে নববী</div>
+      <ul>
+        <li>ডান পা দিয়ে প্রবেশ — দরূদ পড়ুন</li>
+        <li>রওজা মোবারক জিয়ারত — আদবের সাথে সালাম</li>
+        <li><strong>রিয়াজুল জান্নাহ</strong> (সবুজ গালিচা) — ২ রাকাত নামাজ পড়ুন</li>
+        <li>মসজিদে কুবায় ২ রাকাত = ১ উমরার সওয়াব</li>
+        <li>জান্নাতুল বাকিতে দোয়া করুন</li>
+      </ul>
+
+      <div class="section-title">মদিনার বিশেষ স্থান</div>
+      <ul>
+        <li><strong>মসজিদে কুবা:</strong> সপ্তাহে একবার আসার চেষ্টা করুন</li>
+        <li><strong>জান্নাতুল বাকি:</strong> সাহাবা ও নবী পরিবারের কবরস্থান</li>
+        <li><strong>মসজিদে কিবলাতাইন:</strong> দুই কিবলার মসজিদ</li>
+        <li><strong>উহুদ পাহাড়:</strong> হযরত হামজা (রা.)-সহ শহীদদের কবর</li>
+        <li><strong>খন্দকের ময়দান:</strong> পরিখা যুদ্ধের স্থান</li>
+      </ul>
+
+      <div class="section-title">মদিনার দৈনিক আমল</div>
+      <ul>
+        <li>ফজরের পর সূর্যোদয় পর্যন্ত মসজিদে বসুন</li>
+        <li>৪০ ওয়াক্ত জামাতে নামাজ পড়ার চেষ্টা করুন</li>
+        <li>কুরআন তিলাওয়াত ও দরূদ বেশি পড়ুন</li>
+        <li>রাসুল (সা.)-এর উপর বেশি বেশি দরূদ পাঠান</li>
+      </ul>
+    </div>
+
+    <div>
+      <div class="section-title" style="margin-top:0">হজ্বের মূল দিনগুলো (তারিখ ও আমল)</div>
+
+      <table class="sched">
+        <thead>
+          <tr><th>তারিখ</th><th>আমল ও গুরুত্বপূর্ণ কাজ</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="td-day">৮ জিলহজ্ব<br><span style="font-size:7.5pt;font-weight:normal">তারবিয়া</span></td>
+            <td>
+              ইহরাম পরুন। তালবিয়া পড়তে পড়তে মিনায় যান।
+              মিনায় যোহর, আসর, মাগরিব, এশা, পরদিন ফজর — সব মিনায় পড়ুন।
+            </td>
+          </tr>
+          <tr>
+            <td class="td-day">৯ জিলহজ্ব<br><span style="font-size:7.5pt;font-weight:normal">আরাফার দিন</span></td>
+            <td>
+              সূর্যোদয়ের পর আরাফায় রওনা। যোহর + আসর একসাথে (কসর ও জমা)।
+              <strong>সূর্যাস্ত পর্যন্ত আরাফায় অবস্থান (ওয়াকুফ) — হজ্বের মূল রুকন।</strong>
+              সূর্যাস্তের পর মুযদালিফায় যান। মাগরিব + এশা একসাথে।
+              ৪৯-৭০টি পাথর সংগ্রহ করুন। রাত মুযদালিফায় কাটান।
+            </td>
+          </tr>
+          <tr>
+            <td class="td-day">১০ জিলহজ্ব<br><span style="font-size:7.5pt;font-weight:normal">ঈদুল আযহা</span></td>
+            <td>
+              ফজরের পর মিনায় যান। বড় জামারায় ৭ পাথর মারুন।
+              কুরবানি করুন। মাথা মুণ্ডন (তাহাল্লুল আউয়াল)।
+              মক্কায় গিয়ে তাওয়াফে ইফাযা করুন (ফরজ)।
+              সাঈ করুন। মিনায় ফিরুন।
+            </td>
+          </tr>
+          <tr>
+            <td class="td-day">১১ জিলহজ্ব</td>
+            <td>
+              সূর্য হেলার পর তিন জামারায় পাথর মারুন (ছোট→মাঝ→বড়, ৭+৭+৭)।
+              রাত মিনায় কাটান।
+            </td>
+          </tr>
+          <tr>
+            <td class="td-day">১২ জিলহজ্ব</td>
+            <td>
+              তিন জামারায় পাথর মারুন। <strong>সূর্যাস্তের আগে</strong> মিনা ছেড়ে মক্কায় ফিরলে হয়।
+              (আইফাযের নিয়তে থাকলে ১৩ তারিখও মিনায় থাকুন)
+            </td>
+          </tr>
+          <tr>
+            <td class="td-day">১৩ জিলহজ্ব<br><span style="font-size:7.5pt;font-weight:normal">(ঐচ্ছিক)</span></td>
+            <td>
+              তিন জামারায় পাথর মারুন। মক্কায় ফিরুন।
+            </td>
+          </tr>
+          <tr>
+            <td class="td-day">বিদায়ের আগে</td>
+            <td>
+              <strong>তাওয়াফে বিদা করুন — মক্কা ছাড়ার আগে শেষ কাজ।</strong>
+              তাওয়াফ শেষে পেছনে না তাকিয়ে মসজিদ থেকে বের হন।
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="note-box" style="margin-top:3mm">
+        <strong>জামারায় পাথর মারার নিয়ম:</strong> প্রতিটি পাথর আলাদাভাবে ছুঁড়ুন,
+        বিসমিল্লাহ বলুন, "আল্লাহু আকবর" বলে ছাড়ুন।
+        ছোট → মাঝারি → বড় জামারা ক্রমে। ভিড়ে সতর্ক থাকুন।
+      </div>
+    </div>
+  </div>
+
+  <!-- হজ্বের ফরজ / ওয়াজিব / সুন্নাহ চেকলিস্ট -->
+  <hr class="divider">
+  <div class="section-title" style="margin-top:2mm; margin-bottom:3mm">☑ হজ্বের ফরজ, ওয়াজিব ও গুরুত্বপূর্ণ সুন্নাহ — মিলিয়ে নিন</div>
+
+  <div style="display:flex; gap:5mm">
+    <!-- ফরজ -->
+    <div style="flex:1; border:1pt solid #000; padding:2.5mm 3mm">
+      <div style="font-size:9pt; font-weight:bold; border-bottom:0.5pt solid #000; padding-bottom:1.5mm; margin-bottom:2mm">
+        🔴 ফরজ — ৩টি <span style="font-weight:normal; font-size:7.5pt">(বাদ পড়লে হজ্ব বাতিল)</span>
+      </div>
+      <div class="cl-item"><div class="cl-box"></div><span class="cl-text">ইহরাম বাঁধা — নিয়ত ও তালবিয়া</span></div>
+      <div class="cl-item"><div class="cl-box"></div><span class="cl-text">আরাফায় ওয়াকুফ — ৯ জিলহজ্ব (সূর্যাস্ত পর্যন্ত)</span></div>
+      <div class="cl-item"><div class="cl-box"></div><span class="cl-text">তাওয়াফে ইফাযা (ফরজ তাওয়াফ)</span></div>
+    </div>
+
+    <!-- ওয়াজিব -->
+    <div style="flex:1.4; border:1pt solid #000; padding:2.5mm 3mm">
+      <div style="font-size:9pt; font-weight:bold; border-bottom:0.5pt solid #000; padding-bottom:1.5mm; margin-bottom:2mm">
+        🟡 ওয়াজিব — ৮টি <span style="font-weight:normal; font-size:7.5pt">(বাদ পড়লে দম/কুরবানি ওয়াজিব)</span>
+      </div>
+      <div class="cl-item"><div class="cl-box"></div><span class="cl-text">মীকাত থেকে ইহরাম বাঁধা</span></div>
+      <div class="cl-item"><div class="cl-box"></div><span class="cl-text">সাফা-মারওয়া সাঈ করা</span></div>
+      <div class="cl-item"><div class="cl-box"></div><span class="cl-text">মুযদালিফায় রাত কাটানো (ফজর পর্যন্ত)</span></div>
+      <div class="cl-item"><div class="cl-box"></div><span class="cl-text">মিনায় রাত কাটানো (১১-১২ বা ১৩ জিলহজ্ব)</span></div>
+      <div class="cl-item"><div class="cl-box"></div><span class="cl-text">তিন জামারায় পাথর মারা (রামি)</span></div>
+      <div class="cl-item"><div class="cl-box"></div><span class="cl-text">কুরবানি করা (তামাত্তু / কিরান হাজী)</span></div>
+      <div class="cl-item"><div class="cl-box"></div><span class="cl-text">মাথা মুণ্ডন বা চুল ছাঁটা (হালক/তাকসির)</span></div>
+      <div class="cl-item"><div class="cl-box"></div><span class="cl-text">তাওয়াফে বিদা — মক্কা ছাড়ার আগে শেষ কাজ</span></div>
+    </div>
+
+    <!-- সুন্নাহ -->
+    <div style="flex:1.3; border:1pt solid #000; padding:2.5mm 3mm">
+      <div style="font-size:9pt; font-weight:bold; border-bottom:0.5pt solid #000; padding-bottom:1.5mm; margin-bottom:2mm">
+        🟢 গুরুত্বপূর্ণ সুন্নাহ <span style="font-weight:normal; font-size:7.5pt">(না করলে গুনাহ নেই)</span>
+      </div>
+      <div class="cl-item"><div class="cl-box"></div><span class="cl-text">তাওয়াফে কুদুম (আগমনী তাওয়াফ)</span></div>
+      <div class="cl-item"><div class="cl-box"></div><span class="cl-text">৮ জিলহজ্ব মিনায় রাত কাটানো</span></div>
+      <div class="cl-item"><div class="cl-box"></div><span class="cl-text">ইদতিবা ও রমল (তাওয়াফের ১ম-৩য় চক্করে)</span></div>
+      <div class="cl-item"><div class="cl-box"></div><span class="cl-text">মাকামে ইবরাহিমে ২ রাকাত নামাজ</span></div>
+      <div class="cl-item"><div class="cl-box"></div><span class="cl-text">মুলতাজামে দোয়া ও কান্নাকাটি</span></div>
+      <div class="cl-item"><div class="cl-box"></div><span class="cl-text">আরাফায় গোসল করা</span></div>
+      <div class="cl-item"><div class="cl-box"></div><span class="cl-text">মুযদালিফায় ফজরের পর অপেক্ষা</span></div>
+      <div class="cl-item"><div class="cl-box"></div><span class="cl-text">হাজরে আসওয়াদ ও রুকনে ইয়ামানি ইস্তিলাম</span></div>
+    </div>
+  </div>
+
+  <div class="page-foot">
+    <span>HajjFlow — github.com/jakaria-istauk/hajjflow</span>
+    <span>পৃষ্ঠা ৩</span>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════
+     পৃষ্ঠা ৪ | গুরুত্বপূর্ণ দোয়া সমূহ — PORTRAIT
+     ═══════════════════════════════════════════════════════ -->
+<div class="page" id="pg4">
+  <div class="page-title">🤲 হজ্বের গুরুত্বপূর্ণ দোয়া ও তালবিয়া</div>
+
+  <div class="two-col">
+    <div>
+
+      <div class="dua-box">
+        <div class="dua-title">১. তালবিয়া — ইহরাম থেকে আরাফা পর্যন্ত বারবার পড়ুন</div>
+        <div class="dua-ar">لَبَّيْكَ اللَّهُمَّ لَبَّيْكَ، لَبَّيْكَ لَا شَرِيكَ لَكَ لَبَّيْكَ،<br>إِنَّ الْحَمْدَ وَالنِّعْمَةَ لَكَ وَالْمُلْكَ، لَا شَرِيكَ لَكَ</div>
+        <div class="dua-bn">আমি হাজির হে আল্লাহ, আমি হাজির। তোমার কোনো শরিক নেই, আমি হাজির। নিশ্চয়ই সকল প্রশংসা, নেয়ামত ও রাজত্ব তোমারই। তোমার কোনো শরিক নেই।</div>
+      </div>
+
+      <div class="dua-box">
+        <div class="dua-title">২. তাওয়াফ শুরুর দোয়া — হাজরে আসওয়াদ বরাবর</div>
+        <div class="dua-ar">بِسْمِ اللَّهِ وَاللَّهُ أَكْبَرُ، اللَّهُمَّ إِيمَانًا بِكَ<br>وَتَصْدِيقًا بِكِتَابِكَ وَوَفَاءً بِعَهْدِكَ وَاتِّبَاعًا لِسُنَّةِ نَبِيِّكَ</div>
+        <div class="dua-bn">আল্লাহর নামে শুরু, আল্লাহ মহান। হে আল্লাহ! তোমার প্রতি ঈমান রেখে, কিতাব সত্য মনে করে, তোমার ওয়াদা পূর্ণ করতে ও নবীর সুন্নাহ মেনে (তাওয়াফ করছি)।</div>
+      </div>
+
+      <div class="dua-box">
+        <div class="dua-title">৩. রুকনে ইয়ামানি থেকে হাজরে আসওয়াদ পর্যন্ত</div>
+        <div class="dua-ar">رَبَّنَا آتِنَا فِي الدُّنْيَا حَسَنَةً وَفِي الْآخِرَةِ حَسَنَةً وَقِنَا عَذَابَ النَّارِ</div>
+        <div class="dua-bn">হে আমাদের রব! আমাদেরকে দুনিয়ায় কল্যাণ দাও, আখিরাতেও কল্যাণ দাও এবং আমাদেরকে জাহান্নামের আজাব থেকে রক্ষা করো।</div>
+      </div>
+
+      <div class="dua-box">
+        <div class="dua-title">৪. জমজম পানের দোয়া</div>
+        <div class="dua-ar">اللَّهُمَّ إِنِّي أَسْأَلُكَ عِلْمًا نَافِعًا وَرِزْقًا وَاسِعًا<br>وَشِفَاءً مِنْ كُلِّ دَاءٍ وَسَقَمٍ</div>
+        <div class="dua-bn">হে আল্লাহ! আমি তোমার কাছে উপকারী জ্ঞান, প্রশস্ত রিজিক এবং সব রোগ-ব্যাধি থেকে আরোগ্য চাই।</div>
+      </div>
+
+      <div class="dua-box">
+        <div class="dua-title">৫. সাফায় দাঁড়িয়ে — কাবার দিকে মুখ করে</div>
+        <div class="dua-ar">لَا إِلَٰهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ، لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ<br>يُحْيِي وَيُمِيتُ وَهُوَ عَلَىٰ كُلِّ شَيْءٍ قَدِيرٌ</div>
+        <div class="dua-bn">আল্লাহ ছাড়া কোনো ইলাহ নেই, তিনি একক, শরিক নেই। রাজত্ব ও প্রশংসা তারই। তিনি জীবন দেন ও মৃত্যু দেন। তিনি সর্বশক্তিমান।</div>
+      </div>
+
+    </div>
+
+    <div>
+
+      <div class="dua-box">
+        <div class="dua-title">৬. আরাফার দিনের সেরা দোয়া — বারবার পড়ুন</div>
+        <div class="dua-ar">لَا إِلَٰهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ<br>لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ وَهُوَ عَلَىٰ كُلِّ شَيْءٍ قَدِيرٌ</div>
+        <div class="dua-bn">আল্লাহ ছাড়া কোনো ইলাহ নেই। তিনি একক, শরিক নেই। সকল রাজত্ব ও প্রশংসা তারই। তিনি সর্বশক্তিমান।</div>
+        <div class="dua-bn mt2"><em>নবী (সা.) বলেছেন: আরাফার দিনে আমার ও পূর্ববর্তী নবীদের সেরা দোয়া এটি। (তিরমিযি)</em></div>
+      </div>
+
+      <div class="dua-box">
+        <div class="dua-title">৭. কুরবানির সময়</div>
+        <div class="dua-ar">بِسْمِ اللَّهِ وَاللَّهُ أَكْبَرُ، اللَّهُمَّ هَٰذَا مِنْكَ وَلَكَ</div>
+        <div class="dua-bn">আল্লাহর নামে শুরু, আল্লাহ মহান। হে আল্লাহ! এটা তোমার পক্ষ থেকে এবং তোমার জন্যই।</div>
+      </div>
+
+      <div class="dua-box">
+        <div class="dua-title">৮. পাথর মারার সময় (প্রতি পাথরে)</div>
+        <div class="dua-ar">بِسْمِ اللَّهِ وَاللَّهُ أَكْبَرُ</div>
+        <div class="dua-bn">আল্লাহর নামে শুরু, আল্লাহ মহান।</div>
+      </div>
+
+      <div class="dua-box">
+        <div class="dua-title">৯. মসজিদে প্রবেশের দোয়া</div>
+        <div class="dua-ar">اللَّهُمَّ افْتَحْ لِي أَبْوَابَ رَحْمَتِكَ</div>
+        <div class="dua-bn">হে আল্লাহ! আমার জন্য তোমার রহমতের দরজাগুলো খুলে দাও।</div>
+      </div>
+
+      <div class="dua-box">
+        <div class="dua-title">১০. মসজিদ থেকে বের হওয়ার দোয়া</div>
+        <div class="dua-ar">اللَّهُمَّ إِنِّي أَسْأَلُكَ مِنْ فَضْلِكَ</div>
+        <div class="dua-bn">হে আল্লাহ! আমি তোমার অনুগ্রহ প্রার্থনা করছি।</div>
+      </div>
+
+      <div class="dua-box">
+        <div class="dua-title">১১. সফরের শুরুতে</div>
+        <div class="dua-ar">اللَّهُ أَكْبَرُ، اللَّهُ أَكْبَرُ، اللَّهُ أَكْبَرُ، سُبْحَانَ الَّذِي سَخَّرَ لَنَا هَٰذَا وَمَا كُنَّا لَهُ مُقْرِنِينَ، وَإِنَّا إِلَىٰ رَبِّنَا لَمُنْقَلِبُونَ</div>
+        <div class="dua-bn">আল্লাহ মহান (৩ বার)। পবিত্র তিনি যিনি এটিকে আমাদের বশীভূত করেছেন, আমরা তা বশ করতে সক্ষম ছিলাম না। আর আমরা আমাদের রবের কাছেই ফিরে যাব।</div>
+      </div>
+
+      <div class="note-box" style="margin-top:3mm; text-align:center">
+        <strong>হজ্ব কবুলের আলামত:</strong><br>
+        "যে হজ্ব করল, অশ্লীল কথা বলল না এবং পাপ করল না, সে মায়ের পেট থেকে জন্মের দিনের মতো নিষ্পাপ হয়ে ফিরবে।"
+        <br><span class="hadith-ref">— বুখারি ও মুসলিম</span>
+      </div>
+
+    </div>
+  </div>
+
+  <div style="text-align:center; margin-top:4mm; font-size:8.5pt; border-top:0.5pt solid #aaa; padding-top:2.5mm; color:#555">
+    🕋 হজ্ব কবুল হোক &nbsp;|&nbsp; HajjFlow — সম্পূর্ণ বিনামূল্যে &nbsp;|&nbsp; github.com/jakaria-istauk/hajjflow &nbsp;|&nbsp; তৈরি করেছেন: জাকারিয়া ইসতেয়াক
+  </div>
+
+  <div class="page-foot">
+    <span>HajjFlow — github.com/jakaria-istauk/hajjflow</span>
+    <span>পৃষ্ঠা ৪</span>
+  </div>
+</div>
+
+</body>
+</html>
