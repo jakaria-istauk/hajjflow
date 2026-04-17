@@ -15,6 +15,7 @@ import { Doa }        from './pages/Doa.jsx';
 import { Surah }      from './pages/Surah.jsx';
 import { History }    from './pages/History.jsx';
 import { HajjSteps }  from './pages/HajjSteps.jsx';
+import { About }      from './pages/About.jsx';
 import './styles/globals.css';
 
 const TABS = [
@@ -29,6 +30,7 @@ const TABS = [
   { id: 'doa',        label: '১০০ দোয়া',         icon: '🤲', Page: Doa        },
   { id: 'surah',      label: 'সূরা',              icon: '📖', Page: Surah      },
   { id: 'history',    label: 'ইতিহাস',            icon: '📅', Page: History    },
+  { id: 'about',      label: 'সম্পর্কে',           icon: 'ℹ️', Page: About      },
 ];
 
 // ── Login modal (shown when user explicitly requests login) ────────────────
