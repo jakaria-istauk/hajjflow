@@ -74,6 +74,8 @@ function LoginModal() {
   );
 }
 
+const PRINT_URL = `${import.meta.env.BASE_URL}print/hajjflow-print.html`;
+
 // ── Sidebar drawer ────────────────────────────────────────────────────────
 function SideDrawer({ activeTab, onSelect, onClose }) {
   return (
@@ -97,6 +99,19 @@ function SideDrawer({ activeTab, onSelect, onClose }) {
             </button>
           ))}
         </nav>
+        <div className="drawer-divider" />
+        <div className="drawer-section-label">প্রিন্টযোগ্য গাইড</div>
+        <a
+          className="drawer-item"
+          href={PRINT_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+          onClick={onClose}
+        >
+          <span className="drawer-icon">🖨️</span>
+          <span>প্রিন্ট / PDF গাইড</span>
+          <span className="drawer-ext-icon">↗</span>
+        </a>
       </aside>
     </>
   );

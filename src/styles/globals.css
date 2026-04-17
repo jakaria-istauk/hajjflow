@@ -193,6 +193,10 @@ footer { position: sticky; bottom: 0; z-index: 15; }
 .drawer-item.active { background: var(--green-lt); color: var(--green); font-weight: 500; }
 .drawer-icon { font-size: 18px; width: 24px; text-align: center; flex-shrink: 0; }
 .drawer-active-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); margin-left: auto; }
+.drawer-divider { height: 1px; background: var(--border); margin: 8px 0; }
+.drawer-section-label { font-size: 11px; font-weight: 600; color: var(--text-sec); text-transform: uppercase; letter-spacing: 0.6px; padding: 4px 16px 2px; }
+.drawer-ext-icon { margin-left: auto; font-size: 12px; color: var(--text-sec); }
+a.drawer-item { text-decoration: none; }
 
 /* ── Hajj Steps timeline ── */
 .steps-timeline { padding-bottom: 16px; }
