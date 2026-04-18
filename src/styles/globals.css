@@ -165,6 +165,23 @@ footer { position: sticky; bottom: 0; z-index: 15; }
 .special-days-title { font-size: 11px; font-weight: 600; color: var(--text-sec); margin-bottom: 8px; }
 .special-days-body { font-size: 13px; color: var(--text); line-height: 1.8; }
 
+/* ── Scholar notice bar (Overview) ── */
+.scholar-notice-bar { width: 100%; display: flex; align-items: center; gap: 8px; background: #fefce8; border: 1.5px solid #f59e0b; border-radius: var(--radius-md); padding: 10px 12px; margin-bottom: 14px; cursor: pointer; text-align: left; }
+.scholar-notice-icon { font-size: 15px; flex-shrink: 0; }
+.scholar-notice-label { flex: 1; font-size: 13px; font-weight: 500; color: #92400e; }
+.scholar-notice-arrow { font-size: 18px; color: #b45309; line-height: 1; }
+.scholar-modal { gap: 14px; max-width: 340px; }
+.scholar-modal-icon { font-size: 32px; }
+.scholar-modal-title { font-size: 16px; font-weight: 700; color: #92400e; }
+.scholar-modal-body { font-size: 14px; color: var(--text); line-height: 1.75; text-align: center; }
+.scholar-modal-close { margin-top: 4px; background: #f59e0b; color: #fff; border: none; border-radius: 99px; padding: 9px 28px; font-size: 14px; font-weight: 600; cursor: pointer; }
+
+/* ── Scholar alert ── */
+.scholar-alert { display: flex; gap: 10px; align-items: flex-start; background: #fefce8; border: 1.5px solid #f59e0b; border-radius: var(--radius-md); padding: 12px 14px; margin-bottom: 18px; }
+.scholar-alert-icon { font-size: 20px; line-height: 1; flex-shrink: 0; }
+.scholar-alert-text { font-size: 13px; color: #78350f; line-height: 1.6; }
+.scholar-alert-text strong { font-weight: 700; color: #92400e; margin-bottom: 2px; font-size: 14px; }
+
 /* ── Sync banner ── */
 .sync-banner { position: sticky; top: 60px; z-index: 14; background: #1a5c3a; color: #fff; padding: 10px 16px; display: flex; flex-direction: column; align-items: center; gap: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.15); }
 .sync-banner-msg { font-size: 13px; font-weight: 500; text-align: center; }

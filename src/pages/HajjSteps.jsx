@@ -165,6 +165,13 @@ export function HajjSteps() {
   return (
     <>
       <p className="section-title">হজ্বের ধাপসমূহ</p>
+      <div className="scholar-alert">
+        <span className="scholar-alert-icon">⚠️</span>
+        <div className="scholar-alert-text">
+          <strong>গুরুত্বপূর্ণ সতর্কতা</strong> 
+          এটি শুধুমাত্র হজ্বের ধাপের একটি সংক্ষিপ্ত সারসংক্ষেপ। যেকোনো <strong>ফরজ</strong>, <strong>ওয়াজিব</strong> ও <strong>সুন্নাহ</strong> বিষয়ে সিদ্ধান্ত নেওয়ার আগে অবশ্যই একজন যোগ্য আলেম বা মুফতির পরামর্শ গ্রহণ করুন। ভুল আমলে হজ্ব ক্ষতিগ্রস্ত হতে পারে।
+        </div>
+      </div>
       <div className="steps-timeline">
         {STEPS.map((s, i) => (
           <div className="step-item" key={i}>

@@ -25,6 +25,7 @@ export function Overview({ onNavigate }) {
   });
   const [stepsOpen,  setStepsOpen]  = useState(false);
   const [tawafTotal] = useState(getTawafCount);
+  const [alertOpen,  setAlertOpen]  = useState(false);
 
   useEffect(() => {
     setDate(todayStr());
@@ -33,6 +34,28 @@ export function Overview({ onNavigate }) {
 
   return (
     <>
+      <button className="scholar-notice-bar" onClick={() => setAlertOpen(true)}>
+        <span className="scholar-notice-icon">⚠️</span>
+        <span className="scholar-notice-label">ফরজ, ওয়াজিব ও সুন্নাহ বিষয়ে সতর্কতা</span>
+        <span className="scholar-notice-arrow">›</span>
+      </button>
+
+      {alertOpen && (
+        <div className="modal-overlay" onClick={() => setAlertOpen(false)}>
+          <div className="modal-card scholar-modal" onClick={e => e.stopPropagation()}>
+            <div className="scholar-modal-icon">⚠️</div>
+            <div className="scholar-modal-title">গুরুত্বপূর্ণ সতর্কতা</div>
+            <p className="scholar-modal-body">
+              এই অ্যাপটি শুধুমাত্র হজ্বের একটি <strong>সংক্ষিপ্ত সারসংক্ষেপ</strong>।
+              যেকোনো <strong>ফরজ</strong>, <strong>ওয়াজিব</strong> ও <strong>সুন্নাহ</strong> বিষয়ে
+              সিদ্ধান্ত নেওয়ার আগে অবশ্যই একজন যোগ্য <strong>আলেম বা মুফতির</strong> পরামর্শ গ্রহণ করুন।
+              ভুল আমলে হজ্ব ক্ষতিগ্রস্ত হতে পারে।
+            </p>
+            <button className="scholar-modal-close" onClick={() => setAlertOpen(false)}>বুঝেছি</button>
+          </div>
+        </div>
+      )}
+
       <div className="stats">
         <div className="stat-card">
           <div className="stat-num">{coreStats.done}</div>
